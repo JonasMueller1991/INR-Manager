@@ -1,0 +1,27 @@
+###
+GET http://localhost:8080/inr_values
+Accept: application/json
+###
+GET http://localhost:8080/inr_values/1
+Accept: application/json
+
+###
+POST http://localhost:8080/inr_values
+Content-Type: application/json
+
+{
+    "inrValue": "2.6",
+    "date": "2022-10-10"
+}
+###
+DELETE http://localhost:8080/inr_values/52
+###
+PUT http://localhost:8080/inr_values
+Content-Type: application/json
+
+{
+  "id": "1",
+  "inrValue": "3.0",
+  "date": "2022-11-11"
+}
+
