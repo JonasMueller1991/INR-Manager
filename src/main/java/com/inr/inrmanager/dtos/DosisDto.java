@@ -6,9 +6,9 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-@Builder(toBuilder = true)
-public class InrDto implements DtoWithId {
-    private Long Id;
-    private Float inrValue;
+@Builder
+public class DosisDto implements DtoWithId {
+    private Long id;
+    private Integer dosis;
     private LocalDate date;
 }

@@ -1,54 +1,48 @@
 package com.inr.inrmanager.service.crud;
 
-import com.inr.inrmanager.controller.crud.InrController;
 import com.inr.inrmanager.dtos.InrDto;
 import com.inr.inrmanager.jpa.model.Inr;
 import com.inr.inrmanager.repository.InrRepository;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-
-import static com.inr.inrmanager.controller.crud.InrController.mapToDto;
-import static com.inr.inrmanager.controller.crud.InrController.mapToEntity;
-
 @Slf4j
 @NoArgsConstructor
 @Service
-public class InrService {
+public class InrService extends AbstractCrudService<InrDto, Inr> {
     @Autowired
     private InrRepository inrRepository;
 
-    public List<InrDto> read() {
-        return inrRepository.findAll().stream().map(InrController::mapToDto).toList();
+    @Override
+    protected Class<InrDto> getDtoclass() {
+        return InrDto.class;
     }
 
-    public InrDto findById(Long id) {
-        Inr inr = inrRepository.findById(id).orElseThrow(() -> new RuntimeException("INR value not found."));
-        return mapToDto(inr);
+    @Override
+    protected Class<Inr> getEntityClass() {
+        return Inr.class;
     }
 
-    public InrDto create(InrDto inrDto) {
-        Inr inr = mapToEntity(inrDto, new Inr());
-        inr = inrRepository.save(inr);
-        log.debug("Created {}: {}", inrDto.getClass().getSimpleName(), inr);
-        inrDto.setId(inr.getId());
-
-        return inrDto;
+    @Override
+    protected JpaRepository<Inr, Long> getRepository() {
+        return inrRepository;
     }
 
-    public InrDto update(InrDto inrDto) {
-        Inr inr = inrRepository.findById(inrDto.getId()).orElseThrow(() -> new RuntimeException("INR value not found."));
-        inr = mapToEntity(inrDto, inr);
-        inrRepository.save(inr);
-        return inrDto;
+    @Override
+    public InrDto mapToDto(Inr inr) {
+        return InrDto.builder()
+                .Id(inr.getId())
+                .inrValue(inr.getInrValue())
+                .date(inr.getDate())
+                .build();
     }
 
-    public void delete(Long inrId) {
-        Inr inr = inrRepository.findById(inrId).orElseThrow(() -> new RuntimeException("INR value not found"));
-        inrRepository.delete(inr);
+    @Override
+    public Inr mapToEntity(InrDto inrDto, Inr inr) {
+        inr.setInrValue(inrDto.getInrValue());
+        inr.setDate(inrDto.getDate());
+        return inr;
     }
-
 }
